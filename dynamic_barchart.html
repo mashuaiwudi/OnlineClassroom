@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <title>Highcharts Example</title>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+        <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+<script type="text/javascript">
+var chart;
+$(document).ready(function() {
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container',
+            type: 'column',
+            events: {
+       load: function() {  
+         // set up the updating of the chart each second
+         var series = this.series[0];
+         setInterval(function() {
+             var data = [];
+             data.push(['01:Inner brow raiser', Math.random()]);
+             data.push(['02:Outer brow raiser', Math.random()]);
+             data.push(['04:Brow lowerer', Math.random()]);
+             data.push(['05:Upper lid raiser', Math.random()]);
+             data.push(['06:Cheek raiser', Math.random()]);
+             data.push(['07:Lid tighter', Math.random()]);
+             data.push(['09:Nose wrinkler', Math.random()]);
+             data.push(['10:Upper lip raiser', Math.random()]);
+             data.push(['12:Lip corner puller', Math.random()]);
+             data.push(['14:Dimpler', Math.random()]);
+             data.push(['15:Lip corner depressor', Math.random()]);
+             data.push(['17:Chin raiser', Math.random()]);
+             data.push(['20:Lip stretcher', Math.random()]);
+             data.push(['23:Lip tightener', Math.random()]);
+             data.push(['25:Lip part', Math.random()]);
+             data.push(['26:Jaw drop', Math.random()]);
+             data.push(['45:Blink', Math.random()]);
+
+           series.setData(data);
+         }, 2000);
+       }
+     }
+        },
+        title: {
+            text: 'The states of the class'
+        },
+        xAxis: {
+            categories: ['01:Inner brow raiser','02:Outer brow raiser','04:Brow lowerer','05:Upper lid raiser','06:Cheek raiser','07:Lid tighter','09:Nose wrinkler','10:Upper lip raiser','12:Lip corner puller','14:Dimpler','15:Lip corner depressor',
+        '17:Chin raiser','20:Lip stretcher','23:Lip tightener','25:Lip part','26:Jaw drop','45:Blink']
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '当前产值'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -100,
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.x +'</b><br/>'+
+                    this.series.name +': '+ this.y +'<br/>'+
+                    'Total: '+ this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                }
+            }
+        },
+        series: [{
+            name: 'Facial expression itensity',
+            data: [5, 3, 4, 7, 2]
+        }]
+    });
+});
+</script>
+    </head>
+    <body>
+<div id="container" style="width: 1000px;height: 600px"></div>
+    </body>
+</html>

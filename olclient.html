@@ -1,0 +1,257 @@
+<html>
+<head>
+	<title>Students' States View</title>
+        <meta charset="UTF-8">
+</head>
+<body>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+
+
+<div id="myDiv"><h2>Students' States View</h2></div>
+<!--button id="b01" type="button">submit</button-->
+<script>
+
+
+    var facial_expressions;
+    var engage_val;
+    //window.onload = load;//不要括号
+    self.setInterval("load()",1000);
+    
+    function load(){
+        
+        $.ajax({url: 'http://localhost:5000/get_facialexpression',
+                type:'GET',
+                success:function (res) {
+                    console.log(res)
+                    facial_expressions = res.trim().split(", ")
+                    console.log(facial_expressions)
+                    console.log(facial_expressions[0])
+                    //if (res < 0.7){
+                    //  var myVideo = document.getElementById("moocvideo");
+                    //  myVideo.pause();
+                    //}
+                    //else{
+                    //  var myVideo = document.getElementById("moocvideo");
+                    //  myVideo.play();
+                    //}
+                }
+        })
+
+
+        $.ajax({url: 'http://localhost:5000/get_engagement',
+                type:'GET',
+                success:function (res) {
+                    console.log(res)
+                    engage_val = res;
+                    //if (res < 0.7){
+                    //  var myVideo = document.getElementById("moocvideo");
+                    //  myVideo.pause();
+                    //}
+                    //else{
+                    //  var myVideo = document.getElementById("moocvideo");
+                    //  myVideo.play();
+                    //}
+                }
+        })
+    }
+
+
+    $(document).ready(function(){
+    //High chart
+    Highcharts.chart('container2', {
+        chart: {
+            type: 'spline',
+            animation: Highcharts.svg, // don't animate in old IE
+            marginRight: 10,
+            events: {
+                load: function () {
+
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+                    setInterval(function () {
+                        var x = (new Date()).getTime(), // current time
+                            y = eval(engage_val);
+                            console.log(engage_val);
+                        series.addPoint([x, y], true, true);
+                    }, 3000);
+                }
+            }
+        },
+
+        time: {
+            useUTC: false
+        },
+
+        title: {
+            text: 'Class Engagement Level'
+        },
+
+        accessibility: {
+            announceNewData: {
+                enabled: true,
+                minAnnounceInterval: 15000,
+                announcementFormatter: function (allSeries, newSeries, newPoint) {
+                    if (newPoint) {
+                        return 'New point added. Value: ' + newPoint.y;
+                    }
+                    return false;
+                }
+            }
+        },
+
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150
+        },
+
+        yAxis: {
+            title: {
+                text: 'Value'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br/>',
+            pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}'
+        },
+
+        legend: {
+            enabled: false
+        },
+
+        exporting: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Random data',
+            data: (function () {
+                // generate an array of random data
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: eval(engage_val)
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
+
+
+
+  chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container',
+            type: 'column',
+            events: {
+       load: function() {  
+         // set up the updating of the chart each second
+         var series = this.series[0];
+         setInterval(function() {
+             var data = [];
+             data.push(['01:Inner brow raiser', parseFloat(facial_expressions[0])]);
+             data.push(['02:Outer brow raiser', parseFloat(facial_expressions[1])]);
+             data.push(['04:Brow lowerer', parseFloat(facial_expressions[2])]);
+             data.push(['05:Upper lid raiser', parseFloat(facial_expressions[3])]);
+             data.push(['06:Cheek raiser', parseFloat(facial_expressions[4])]);
+             data.push(['07:Lid tighter', parseFloat(facial_expressions[5])]);
+             data.push(['09:Nose wrinkler', parseFloat(facial_expressions[6])]);
+             data.push(['10:Upper lip raiser', parseFloat(facial_expressions[7])]);
+             data.push(['12:Lip corner puller', parseFloat(facial_expressions[8])]);
+             data.push(['14:Dimpler', parseFloat(facial_expressions[9])]);
+             data.push(['15:Lip corner depressor', parseFloat(facial_expressions[10])]);
+             data.push(['17:Chin raiser', parseFloat(facial_expressions[11])]);
+             data.push(['20:Lip stretcher', parseFloat(facial_expressions[12])]);
+             data.push(['23:Lip tightener', parseFloat(facial_expressions[13])]);
+             data.push(['25:Lip part', parseFloat(facial_expressions[14])]);
+             data.push(['26:Jaw drop', parseFloat(facial_expressions[15])]);
+             data.push(['45:Blink', parseFloat(facial_expressions[16])]);
+
+           series.setData(data);
+         }, 2000);
+       }
+     }
+        },
+        title: {
+            text: 'The states of the class'
+        },
+        xAxis: {
+            categories: ['01:Inner brow raiser','02:Outer brow raiser','04:Brow lowerer','05:Upper lid raiser','06:Cheek raiser','07:Lid tighter','09:Nose wrinkler','10:Upper lip raiser','12:Lip corner puller','14:Dimpler','15:Lip corner depressor',
+        '17:Chin raiser','20:Lip stretcher','23:Lip tightener','25:Lip part','26:Jaw drop','45:Blink']
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'itensity'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -100,
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.x +'</b><br/>'+
+                    this.series.name +': '+ this.y +'<br/>'+
+                    'Total: '+ this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                }
+            }
+        },
+        series: [{
+            name: 'Facial expression itensity',
+            data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        }]
+    });
+    
+});
+
+</script>
+
+
+
+<!--video id="moocvideo" width="1000" height="750" controls>
+  <source src="src/video1.mp4" type="video/mp4">
+  您的浏览器不支持 video 属性。
+</video-->
+<div id="container" style="width: 500px;height: 400px"></div>
+<div id="container2" style="width: 500px;height: 300px"></div>
+
+</body>
+</html>
